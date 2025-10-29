@@ -7,13 +7,16 @@ use App\Models\Result;
 use App\Services\PinService;
 
 test('can find pin by credentials', function () {
+    $pinCode = fake()->numerify('########');
+    $serialNumber = fake()->numerify('SN########');
+
     $pin = Pin::factory()->create([
-        'pin' => '12345678',
-        'serial_number' => 'SN12345678',
+        'pin' => $pinCode,
+        'serial_number' => $serialNumber,
     ]);
 
     $service = new PinService;
-    $found = $service->findPin('12345678', 'SN12345678');
+    $found = $service->findPin($pinCode, $serialNumber);
 
     expect($found)->not->toBeNull()
         ->and($found->id)->toBe($pin->id);
@@ -50,7 +53,7 @@ test('rejects expired pin', function () {
 test('rejects pin used by different result', function () {
     $result1 = Result::factory()->create();
     $result2 = Result::factory()->create();
-    $pin = Pin::factory()->used($result1)->create();
+    $pin = Pin::factory()->used($result1)->create(['count' => 2]);
 
     $service = new PinService;
     $validation = $service->validatePinUsage($pin, $result2);
