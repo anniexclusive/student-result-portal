@@ -57,7 +57,7 @@ ps: ## Show running containers
 	docker-compose ps
 
 ## —— Setup & Installation —————————————————————————————————————————————
-setup: env build up install key migrate seed ## Complete project setup
+setup: build up install key migrate seed ## Complete project setup
 	@echo "$(GREEN)✓ Setup complete!$(NC)"
 	@echo "$(YELLOW)Visit: http://localhost:8000$(NC)"
 
@@ -72,13 +72,9 @@ key: ## Generate application key
 	@echo "$(GREEN)✓ Application key generated$(NC)"
 
 env: ## Copy .env.example to .env
-	@if [ ! -f .env ]; then \
-		echo "$(BLUE)Creating .env file...$(NC)"; \
-		cp .env.example .env; \
-		echo "$(GREEN)✓ .env file created$(NC)"; \
-	else \
-		echo "$(YELLOW).env file already exists, skipping...$(NC)"; \
-	fi
+	@echo "$(BLUE)Creating .env file...$(NC)"
+	cp .env.example .env
+	@echo "$(GREEN)✓ .env file created$(NC)"
 
 ## —— Database ——————————————————————————————————————————————————————————
 migrate: ## Run database migrations
