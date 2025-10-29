@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Pin;
 use App\Models\Result;
 use App\Services\ResultService;
 
@@ -25,11 +26,11 @@ test('returns null for non-existent exam number', function () {
 });
 
 test('checks if result exists', function () {
-    Result::factory()->create(['exam_number' => 'EX123456789']);
+    Result::factory()->create(['exam_number' => 'EX987654321']);
 
     $service = new ResultService;
 
-    expect($service->resultExists('EX123456789'))->toBeTrue()
+    expect($service->resultExists('EX987654321'))->toBeTrue()
         ->and($service->resultExists('INVALID'))->toBeFalse();
 });
 
