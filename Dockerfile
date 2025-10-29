@@ -41,6 +41,12 @@ RUN apk add --no-cache pcre-dev $PHPIZE_DEPS \
     && docker-php-ext-enable redis \
     && apk del pcre-dev $PHPIZE_DEPS
 
+# Install PCOV for code coverage
+RUN apk add --no-cache $PHPIZE_DEPS \
+    && pecl install pcov \
+    && docker-php-ext-enable pcov \
+    && apk del $PHPIZE_DEPS
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
