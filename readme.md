@@ -1,51 +1,308 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Student Result Portal
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+A modern Laravel 11 application for managing and accessing student examination results using PIN-based authentication. Students can securely check their results using a unique PIN and serial number combination.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+- 🔐 **Secure PIN-based result access** - Results protected by unique PIN and serial number
+- ♻️ **Reusable PINs** - PINs can be used up to 5 times for the same result
+- 🏗️ **Modern Architecture** - Service layer, form requests, and proper separation of concerns
+- ✅ **Comprehensive Testing** - Full test coverage with Pest PHP
+- 🐳 **Docker Support** - Fully containerized development environment
+- 🚀 **CI/CD Ready** - GitHub Actions workflow for automated testing and quality checks
+- 📊 **Type Safety** - PHPStan/Larastan static analysis
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
+- **Framework**: Laravel 11.x
+- **PHP**: 8.3
+- **Database**: MySQL 8.0
+- **Cache/Queue**: Redis 7
+- **Web Server**: Nginx (Alpine)
+- **Testing**: Pest PHP
+- **Code Quality**: Laravel Pint, PHPStan/Larastan
 
-## Learning Laravel
+## Prerequisites
 
-Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
+- Docker & Docker Compose
+- Git
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+**OR** for local development:
 
-## Laravel Sponsors
+- PHP 8.3+
+- Composer
+- MySQL 8.0+
+- Redis 7+
+- Node.js & NPM (for frontend assets)
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
+## Quick Start with Docker
 
-- **[Vehikl](http://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Styde](https://styde.net)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd student-result-portal
+   ```
+
+2. **Copy environment file**
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Start Docker containers**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Install dependencies**
+   ```bash
+   docker-compose exec app composer install
+   ```
+
+5. **Generate application key**
+   ```bash
+   docker-compose exec app php artisan key:generate
+   ```
+
+6. **Run migrations and seed database**
+   ```bash
+   docker-compose exec app php artisan migrate --seed
+   ```
+
+7. **Access the application**
+   - Open your browser and visit: `http://localhost:8000`
+
+## Local Development Setup
+
+1. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
+
+2. **Configure environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+   Update `.env` with your local database credentials:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=student_portal
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   ```
+
+3. **Run migrations**
+   ```bash
+   php artisan migrate --seed
+   ```
+
+4. **Start development server**
+   ```bash
+   php artisan serve
+   ```
+
+5. **Access the application**
+   - Visit: `http://localhost:8000`
+
+## Testing
+
+The project uses Pest PHP for testing with comprehensive coverage.
+
+### Run all tests
+```bash
+# With Docker
+docker-compose exec app php artisan test
+
+# Local
+php artisan test
+```
+
+### Run with coverage
+```bash
+php artisan test --coverage
+```
+
+### Run specific test suites
+```bash
+# Feature tests only
+php artisan test --testsuite=Feature
+
+# Unit tests only
+php artisan test --testsuite=Unit
+```
+
+## Code Quality
+
+### Format code with Laravel Pint
+```bash
+# Check formatting
+./vendor/bin/pint --test
+
+# Fix formatting
+./vendor/bin/pint
+```
+
+### Run static analysis
+```bash
+./vendor/bin/phpstan analyse
+```
+
+## Project Structure
+
+```
+app/
+├── Http/
+│   ├── Controllers/     # Application controllers
+│   └── Requests/        # Form request validation classes
+├── Models/              # Eloquent models
+└── Services/            # Business logic layer
+database/
+├── factories/           # Model factories for testing
+├── migrations/          # Database migrations
+└── seeders/            # Database seeders
+tests/
+├── Feature/            # Feature/integration tests
+└── Unit/               # Unit tests
+```
+
+## Key Components
+
+### Models
+
+- **Result**: Stores student examination results
+- **Pin**: Manages PIN codes for result access
+- **User**: Application users (for admin access)
+
+### Services
+
+- **ResultService**: Handles result retrieval and management
+- **PinService**: Manages PIN validation and usage tracking
+
+### Business Rules
+
+- PINs can be used maximum 5 times
+- Once used, a PIN is locked to a specific result
+- The same PIN can be reused by the same student
+- Different students cannot share PINs
+
+## API Documentation
+
+### Check Result
+
+**Endpoint**: `POST /check`
+
+**Parameters**:
+- `pin` (string, required): PIN code
+- `serial_number` (string, required): Serial number
+- `reg_number` (string, required): Examination number
+
+**Response**: Displays result page or returns error
+
+## Environment Variables
+
+Key environment variables (see `.env.example` for full list):
+
+```env
+APP_NAME="Student Result Portal"
+APP_URL=http://localhost:8000
+APP_PORT=8000
+
+DB_CONNECTION=mysql
+DB_HOST=mysql              # Use 'mysql' for Docker, '127.0.0.1' for local
+DB_DATABASE=student_portal
+DB_USERNAME=laravel
+DB_PASSWORD=secret
+
+CACHE_STORE=redis
+SESSION_DRIVER=redis
+QUEUE_CONNECTION=redis
+
+REDIS_HOST=redis           # Use 'redis' for Docker, '127.0.0.1' for local
+```
+
+## Docker Commands
+
+```bash
+# Start containers
+docker-compose up -d
+
+# Stop containers
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Access app container shell
+docker-compose exec app sh
+
+# Run artisan commands
+docker-compose exec app php artisan <command>
+
+# Run composer commands
+docker-compose exec app composer <command>
+```
+
+## CI/CD
+
+The project includes GitHub Actions workflows for:
+
+- ✅ Automated testing on push/PR
+- 🔍 Code quality checks (Pint, PHPStan)
+- 🔒 Security vulnerability scanning
+- 📊 Code coverage reporting
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Security Vulnerabilities
+### Commit Convention
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+This project follows [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` New features
+- `fix:` Bug fixes
+- `refactor:` Code refactoring
+- `test:` Adding or updating tests
+- `docs:` Documentation changes
+- `chore:` Maintenance tasks
+
+## Troubleshooting
+
+### Docker containers won't start
+```bash
+# Check if ports are already in use
+docker-compose down
+docker-compose up -d
+```
+
+### Database connection issues
+- Ensure MySQL container is running: `docker-compose ps`
+- Check database credentials in `.env`
+- Wait a few seconds for MySQL to fully start
+
+### Permission issues
+```bash
+# Fix storage permissions
+docker-compose exec app chmod -R 775 storage bootstrap/cache
+docker-compose exec app chown -R www-data:www-data storage bootstrap/cache
+```
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Support
+
+For issues, questions, or contributions, please open an issue on GitHub.
+
+---
+
+**Note**: This is a modernized version of the application, upgraded from Laravel 5.4 to Laravel 11 with best practices and modern development tools.
