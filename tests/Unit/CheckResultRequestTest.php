@@ -6,7 +6,7 @@ use App\Http\Requests\CheckResultRequest;
 use Illuminate\Support\Facades\Validator;
 
 test('validation passes with all required fields', function () {
-    $request = new CheckResultRequest();
+    $request = new CheckResultRequest;
     $validator = Validator::make([
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
@@ -17,7 +17,7 @@ test('validation passes with all required fields', function () {
 });
 
 test('validation fails without pin', function () {
-    $request = new CheckResultRequest();
+    $request = new CheckResultRequest;
     $validator = Validator::make([
         'serial_number' => 'SN12345678',
         'reg_number' => 'EX123456789',
@@ -28,7 +28,7 @@ test('validation fails without pin', function () {
 });
 
 test('validation fails without serial number', function () {
-    $request = new CheckResultRequest();
+    $request = new CheckResultRequest;
     $validator = Validator::make([
         'pin' => '12345678',
         'reg_number' => 'EX123456789',
@@ -39,7 +39,7 @@ test('validation fails without serial number', function () {
 });
 
 test('validation fails without reg number', function () {
-    $request = new CheckResultRequest();
+    $request = new CheckResultRequest;
     $validator = Validator::make([
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
@@ -50,7 +50,7 @@ test('validation fails without reg number', function () {
 });
 
 test('validation fails with empty pin', function () {
-    $request = new CheckResultRequest();
+    $request = new CheckResultRequest;
     $validator = Validator::make([
         'pin' => '',
         'serial_number' => 'SN12345678',
