@@ -1,70 +1,51 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Pin;
-use App\Result;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
+use App\Http\Requests\CheckResultRequest;
+use App\Services\PinService;
+use App\Services\ResultService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class PagesController extends Controller
 {
-    public function home()
-	{		
-				
-		return view('pages.index');
-	}
+    public function __construct(
+        private readonly PinService $pinService,
+        private readonly ResultService $resultService
+    ) {}
 
-	public function runValidate($request)
+    /**
+     * Display the home page.
+     */
+    public function home(): View
     {
-        $this->validate($request, [
-            'pin' => 'required',
-            'reg_number' => 'required',
-            'serial_number' => 'required',                                
-            ]);     
-    } 
+        return view('pages.index');
+    }
 
-    public function check(Request $request)
+    /**
+     * Check student result using PIN and examination number.
+     */
+    public function check(CheckResultRequest $request): View|RedirectResponse
     {
-        $this->runValidate($request);
+        $result = $this->resultService->findResultByExamNumber($request->reg_number);
 
-        // Start transaction!
-        //DB::beginTransaction();
-
-        $pin = Pin::where('pin', $request->pin)
-		    ->where('serial_number', $request->serial_number)		   
-		    ->first();
-		$student = Result::where('exam_number', $request->reg_number)->first();
-        if($pin) {
-        	if($pin->use_status == '' || ($pin->use_status == 'used' && $pin->results_id == $student->id )) {
-        		if($student) {
-	        		if($pin->count <= 5) {
-	        			$pin->update([
-		            		'count' => $pin->count + 1,
-		            		'results_id' => $student->id,
-		            		'use_status' => 'used'
-		            	]);
-	        			return view('pages.result', compact('student'));
-		        		
-	        		} else{
-	        			return back()->withErrors(['msg' => 'PIN has expired!!']);
-	        		}
-
-	        	} else {
-	        		return back()->withErrors(['msg' => 'Invalid Examination Number']);
-	        	}
-        	} else {
-        		return back()->withErrors(['msg' => 'PIN used by another user!']);
-        	}
-        	
-        } else {
-        	return back()->withErrors(['msg' => 'Invalid PIN and Serial Number']);
+        if (! $result) {
+            return back()->withErrors(['msg' => 'Invalid Examination Number']);
         }
-        
-    
-    // Commit the queries!
-    //DB::commit();
-        
-        return back()->with('success', 'New student registered successfully.');
+
+        $pinValidation = $this->pinService->validateAndUsePinForResult(
+            $request->pin,
+            $request->serial_number,
+            $result
+        );
+
+        if (! $pinValidation['success']) {
+            return back()->withErrors(['msg' => $pinValidation['message']]);
+        }
+
+        return view('pages.result', ['student' => $result]);
     }
 }
