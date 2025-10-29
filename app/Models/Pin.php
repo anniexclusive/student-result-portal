@@ -71,6 +71,6 @@ class Pin extends Model
         }
 
         // If PIN is unused or used by the same result
-        return ! $this->isUsed() || ($this->isUsed() && $this->result_id === $result?->id);
+        return ! $this->isUsed() || $this->result_id === $result?->id;
     }
 }

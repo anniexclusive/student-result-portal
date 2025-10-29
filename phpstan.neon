@@ -11,9 +11,11 @@ parameters:
     level: 5
 
     ignoreErrors:
-        - '#PHPDoc tag @var#'
+        # Pest test false positives - $this is available in test context
+        - '#Undefined variable: \$this#'
+        # Laravel framework PHPDoc covariance issues
+        - '#PHPDoc type array.* is not covariant with PHPDoc type#'
 
     excludePaths:
-        - ./*/*/FileToBeExcluded.php
-
-    checkMissingIterableValueType: false
+        # Laravel auth scaffolding with runtime traits
+        - app/Http/Controllers/Auth/*
