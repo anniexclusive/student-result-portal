@@ -5,9 +5,9 @@
 /storage/*.key
 /.env
 /.env.backup
-/docker
 /tests
 .phpunit.result.cache
 .DS_Store
 Thumbs.db
 *.log
+todo.md
