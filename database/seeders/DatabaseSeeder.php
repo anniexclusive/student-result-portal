@@ -6,7 +6,6 @@ namespace Database\Seeders;
 
 use App\Models\Pin;
 use App\Models\Result;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,12 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test user
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
         // Create 20 results with different statuses
         $passedResults = Result::factory()->count(15)->passed()->create();
         $failedResults = Result::factory()->count(5)->failed()->create();
@@ -39,8 +32,7 @@ class DatabaseSeeder extends Seeder
         Pin::factory()->count(3)->expired()->create();
 
         $this->command->info('Database seeded successfully!');
-        $this->command->info('Sample credentials:');
-        $this->command->info('Email: test@example.com');
-        $this->command->info('Password: password');
+        $this->command->info('Created 20 exam results (15 passed, 5 failed)');
+        $this->command->info('Created 10 unused PINs, 5 used PINs, and 3 expired PINs');
     }
 }

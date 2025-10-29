@@ -49,13 +49,12 @@ class PinService
      */
     public function markPinAsUsed(Pin $pin, Result $result): Pin
     {
-        $pin->update([
-            'count' => $pin->count + 1,
-            'result_id' => $result->id,
-            'use_status' => 'used',
-        ]);
+        $pin->increment('count');
+        $pin->result_id = $result->id;
+        $pin->use_status = 'used';
+        $pin->save();
 
-        return $pin->fresh();
+        return $pin;
     }
 
     /**
