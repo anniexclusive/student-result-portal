@@ -4,21 +4,25 @@ declare(strict_types=1);
 
 use App\Models\Pin;
 use App\Models\Result;
+use App\Models\User;
 
 test('home page loads successfully', function () {
-    $response = $this->get('/');
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get('/');
 
     $response->assertStatus(200);
 });
 
 test('can check result with valid credentials', function () {
+    $user = User::factory()->create();
     $result = Result::factory()->create(['exam_number' => 'EX123456789']);
     $pin = Pin::factory()->unused()->create([
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
     ]);
 
-    $response = $this->post('/check', [
+    $response = $this->actingAs($user)->post('/check', [
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
         'reg_number' => 'EX123456789',
@@ -36,9 +40,10 @@ test('can check result with valid credentials', function () {
 });
 
 test('cannot check result with invalid pin', function () {
+    $user = User::factory()->create();
     Result::factory()->create(['exam_number' => 'EX123456789']);
 
-    $response = $this->post('/check', [
+    $response = $this->actingAs($user)->post('/check', [
         'pin' => 'invalid',
         'serial_number' => 'invalid',
         'reg_number' => 'EX123456789',
@@ -49,12 +54,13 @@ test('cannot check result with invalid pin', function () {
 });
 
 test('cannot check result with invalid exam number', function () {
+    $user = User::factory()->create();
     Pin::factory()->unused()->create([
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
     ]);
 
-    $response = $this->post('/check', [
+    $response = $this->actingAs($user)->post('/check', [
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
         'reg_number' => 'INVALID',
@@ -65,13 +71,14 @@ test('cannot check result with invalid exam number', function () {
 });
 
 test('cannot check result with expired pin', function () {
+    $user = User::factory()->create();
     $result = Result::factory()->create(['exam_number' => 'EX123456789']);
     Pin::factory()->expired()->create([
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
     ]);
 
-    $response = $this->post('/check', [
+    $response = $this->actingAs($user)->post('/check', [
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
         'reg_number' => 'EX123456789',
@@ -82,6 +89,7 @@ test('cannot check result with expired pin', function () {
 });
 
 test('cannot use pin used by different result', function () {
+    $user = User::factory()->create();
     $result1 = Result::factory()->create(['exam_number' => 'EX111111111']);
     $result2 = Result::factory()->create(['exam_number' => 'EX222222222']);
 
@@ -90,7 +98,7 @@ test('cannot use pin used by different result', function () {
         'serial_number' => 'SN12345678',
     ]);
 
-    $response = $this->post('/check', [
+    $response = $this->actingAs($user)->post('/check', [
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
         'reg_number' => 'EX222222222',
@@ -101,6 +109,7 @@ test('cannot use pin used by different result', function () {
 });
 
 test('can reuse pin for same result', function () {
+    $user = User::factory()->create();
     $result = Result::factory()->create(['exam_number' => 'EX123456789']);
     $pin = Pin::factory()->used($result)->create([
         'pin' => '12345678',
@@ -108,7 +117,7 @@ test('can reuse pin for same result', function () {
         'count' => 2,
     ]);
 
-    $response = $this->post('/check', [
+    $response = $this->actingAs($user)->post('/check', [
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
         'reg_number' => 'EX123456789',
@@ -123,7 +132,8 @@ test('can reuse pin for same result', function () {
 });
 
 test('validation fails without required fields', function () {
-    $response = $this->post('/check', []);
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)->post('/check', []);
 
     $response->assertSessionHasErrors(['pin', 'reg_number', 'serial_number']);
 });

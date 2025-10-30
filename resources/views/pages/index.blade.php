@@ -11,8 +11,8 @@
 					<div class="col-lg-8">
 						<div class="contact-box result-box">
 					
-					<form id="contact-form" method="post" action="{{ url('/result') }}">
-						  {{ csrf_field() }}
+					<form id="contact-form" method="post" action="{{ route('result.check') }}">
+						  @csrf
 						<label>Your Registration Number</label>
 						<input name="reg_number" type="text">
 						<label>Your Card Pin</label>

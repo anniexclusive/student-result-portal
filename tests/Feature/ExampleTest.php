@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -13,7 +14,9 @@ class ExampleTest extends TestCase
      */
     public function test_basic_test()
     {
-        $response = $this->get('/');
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/');
 
         $response->assertStatus(200);
     }

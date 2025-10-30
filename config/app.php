@@ -172,7 +172,7 @@ return [
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
-        // App\Providers\AuthServiceProvider::class, // Removed: No authentication used
+        App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class, // Removed: No broadcasting used
         // App\Providers\EventServiceProvider::class, // Removed: No events defined
         App\Providers\RouteServiceProvider::class,

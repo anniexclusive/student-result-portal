@@ -24,7 +24,29 @@
 	<div id="container">
 		<!-- Header
 		    ================================================== -->
-		
+		<header style="background: #f8f9fa; padding: 15px 0; border-bottom: 2px solid #dee2e6;">
+			<div class="container">
+				<div style="display: flex; justify-content: space-between; align-items: center;">
+					<div>
+						<strong>Student Result Portal</strong>
+					</div>
+					<div>
+						@auth
+							<span style="margin-right: 15px;">Welcome, {{ Auth::user()->name }}</span>
+							<form action="{{ route('logout') }}" method="POST" style="display: inline;">
+								@csrf
+								<button type="submit" style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+									Logout
+								</button>
+							</form>
+						@else
+							<a href="{{ route('login') }}" style="margin-right: 10px; text-decoration: none; color: #007bff;">Login</a>
+							<a href="{{ route('register') }}" style="text-decoration: none; color: #007bff;">Register</a>
+						@endauth
+					</div>
+				</div>
+			</div>
+		</header>
 		<!-- End Header -->
 
 		<!-- page-banner-section 
