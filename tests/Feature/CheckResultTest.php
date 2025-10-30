@@ -41,12 +41,12 @@ test('can check result with valid credentials', function () {
 
 test('cannot check result with invalid pin', function () {
     $user = User::factory()->create();
-    Result::factory()->create(['exam_number' => 'EX123456789']);
+    Result::factory()->create(['exam_number' => 'EX987654321']);
 
     $response = $this->actingAs($user)->post('/check', [
         'pin' => 'invalid',
         'serial_number' => 'invalid',
-        'reg_number' => 'EX123456789',
+        'reg_number' => 'EX987654321',
     ]);
 
     $response->assertRedirect()
@@ -72,7 +72,7 @@ test('cannot check result with invalid exam number', function () {
 
 test('cannot check result with expired pin', function () {
     $user = User::factory()->create();
-    $result = Result::factory()->create(['exam_number' => 'EX123456789']);
+    $result = Result::factory()->create(['exam_number' => 'EX555555555']);
     Pin::factory()->expired()->create([
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
@@ -81,7 +81,7 @@ test('cannot check result with expired pin', function () {
     $response = $this->actingAs($user)->post('/check', [
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
-        'reg_number' => 'EX123456789',
+        'reg_number' => 'EX555555555',
     ]);
 
     $response->assertRedirect()
@@ -110,7 +110,7 @@ test('cannot use pin used by different result', function () {
 
 test('can reuse pin for same result', function () {
     $user = User::factory()->create();
-    $result = Result::factory()->create(['exam_number' => 'EX123456789']);
+    $result = Result::factory()->create(['exam_number' => 'EX333333333']);
     $pin = Pin::factory()->used($result)->create([
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
@@ -120,7 +120,7 @@ test('can reuse pin for same result', function () {
     $response = $this->actingAs($user)->post('/check', [
         'pin' => '12345678',
         'serial_number' => 'SN12345678',
-        'reg_number' => 'EX123456789',
+        'reg_number' => 'EX333333333',
     ]);
 
     $response->assertStatus(200)
